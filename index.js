@@ -9,12 +9,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const app = express();
 const fs = require('fs');
-const options = {
-    key: fs.readFileSync('./localhost+2-key.pem'),
-    cert: fs.readFileSync('./localhost+2.pem'),
-    requestCert: false,
-    rejectUnauthorized: false,
-};
+const options = {};
 const server = http.createServer(options, app);
 const bcrypt = require('bcryptjs')
 const io = socketIO(server, {
@@ -111,9 +106,27 @@ app.post(`/consumer/:id`, async ({ body, params }, res) => {
         let id = params.id
         const peer = new webrtc.RTCPeerConnection({
             iceServers: [
-                {
-                    urls: "stun:stun.stunprotocol.org"
-                }
+                // {
+                //     urls: "stun:stun.stunprotocol.org"
+                // },
+                // {
+                //     urls: "stun:relay.metered.ca:80",
+                //   },
+                  {
+                    urls: "turn:relay.metered.ca:80",
+                    username: "807973d909920f718ba0b567",
+                    credential: "VGyNVhO+WtsGoTih",
+                  },
+                  {
+                    urls: "turn:relay.metered.ca:443",
+                    username: "807973d909920f718ba0b567",
+                    credential: "VGyNVhO+WtsGoTih",
+                  },
+                  {
+                    urls: "turn:relay.metered.ca:443?transport=tcp",
+                    username: "807973d909920f718ba0b567",
+                    credential: "VGyNVhO+WtsGoTih",
+                  },
             ]
         });
         const desc = new webrtc.RTCSessionDescription(body.sdp);
@@ -141,9 +154,33 @@ app.post(`/broadcast/${roomParam}`, async ({ body }, res) => {
     try {
         const peer = new webrtc.RTCPeerConnection({
             iceServers: [
-                {
-                    urls: "stun:stun.stunprotocol.org"
-                }
+                // {
+                //     urls: "stun:stun.stunprotocol.org"
+                // },
+                // {
+                //     urls: "stun:stun.relay.metered.ca:80",
+                //   },
+                  {
+                    urls: "turn:a.relay.metered.ca:80",
+                    username: "807973d909920f718ba0b567",
+                    credential: "VGyNVhO+WtsGoTih",
+                  },
+                  {
+                    urls: "turn:a.relay.metered.ca:80?transport=tcp",
+                    username: "807973d909920f718ba0b567",
+                    credential: "VGyNVhO+WtsGoTih",
+                  },
+                  {
+                    urls: "turn:a.relay.metered.ca:443",
+                    username: "807973d909920f718ba0b567",
+                    credential: "VGyNVhO+WtsGoTih",
+                  },
+                  {
+                    urls: "turn:a.relay.metered.ca:443?transport=tcp",
+                    username: "807973d909920f718ba0b567",
+                    credential: "VGyNVhO+WtsGoTih",
+                  },
+            
             ]
         });
         peer.ontrack = (e) => handleTrackEvent(e, peer);
